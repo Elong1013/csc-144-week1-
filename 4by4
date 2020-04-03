@@ -1,0 +1,126 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package edu.cornellcollege.matrix;
+
+/**
+ *
+ * @author Erlang
+ * @version 1 April 2020
+ */
+public class matrix {
+
+    private double[][] elements = new double[2][2];
+
+    public matrix() {
+        double[] row0 = {1, 0, 0, 0};
+        double[] row1 = {0, 1, 0, 0};
+        double[] row2 = {0, 0, 1, 0};
+        double[] row3 = {0, 0, 0, 1};
+        double [][] e = {row0, row1, row2, row3 };
+        this.elements = e;
+    }
+
+    public matrix(double m00, double m01, double m10, double m11) {
+        this.elements[0][0] = m00;
+        this.elements[0][1] = m01;
+        this.elements[1][0] = m10;
+        this.elements[1][1] = m11;
+    }
+
+    public matrix multiply(matrix otherMatrix) {
+        matrix product = new matrix();
+        for (int row = 0; row < 4 ; row++){
+            for (int column = 0 ; column < 4 ; column++){
+                double sum = 0.0; 
+                for (int k =0; k <4 ; k++){
+                    sum += this.elements [row][k] * otherMatrix.elements [k][column];
+                }
+                product.set (row, column , sum);
+            }
+        }
+        return product;
+    }
+    private String rowToString (int row ){
+        StringBuilder result = new StringBuilder();
+        result.append("(");
+        result.append(this.elements [row][0]);
+        result.append(",");
+        result.append(this.elements [row][1]);
+        result.append(",");
+        result.append(this.elements [row][2]);
+        result.append(",");
+        result.append(this.elements [row][3]);
+        result.append(")");
+        return result.toString();
+        
+                
+    }
+    
+    @Override 
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result .append("[");
+        for (int i = 0 ; i<4; i++){
+            result.append (rowToString(i));
+            
+        }
+        result.append("]");
+        return result.toString();
+        
+    }
+
+    public void rotation(double angle) {
+        this.identity();
+        this.set(0,0, Math.cos(angle));
+        this.set(0,1, -Math.sin(angle));
+        this.set(1,0, Math.sin(angle));
+        this.set(1,1, Math.cos(angle));
+    }
+
+    public double get(int row, int column) {
+        return this.elements[row][column];
+    }//get (int,int)
+    
+    public void set(int row, int column, double value){
+        this.elements [row][column] = value;
+        
+    }
+    
+    public void identity(){
+        for (int i = 0; i < 4; i++){
+            for (int j = 0 ;  j<4 ; j++){
+                if (i == j ){
+                    this.elements [i][j]=1.0;
+                    
+                }else{
+                    this.elements[i][j] =0.0;
+                }
+            }
+        }
+    }
+    
+
+
+    public static void main(String[] args) {
+        matrix identity = new matrix();
+        System.out.println("identity =" + identity);
+        
+        
+        matrix product = identity.multiply(identity);
+        System.out.println("identity =" + identity);
+
+        matrix ccw = new matrix();
+        ccw.rotation(Math.PI / 4);
+
+        matrix cw = new matrix();
+        cw.rotation(-Math.PI / 4);
+
+        matrix netrotation = ccw.multiply(cw);
+        System.out.println("net rotation =" + netrotation);
+
+    }
+
+}
